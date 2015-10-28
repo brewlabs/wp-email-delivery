@@ -41,7 +41,6 @@ class WPED_Exception extends Exception {}
  * @since  1.0.0
  * @return object WP_Email_Delivery
  */
-
 function WEPD () {
 	$instance = WP_Email_Delivery::instance( __FILE__, '1.0.0' );
 

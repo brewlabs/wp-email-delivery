@@ -299,16 +299,17 @@ class WP_Email_Delivery_Connections {
 
 	public function message_send($message){
 			$info = array(
-				"X-SP-METHOD"=>"WPED.co",
-				"X-SP-DOMAIN"=> home_url()
+				"X-WPED"=>"ssl",
+				"X-WPED-DOMAIN"=> home_url()
 			);
 
 			$url = self::SSL_END_POINT;
 			//$url = 'http://spnl.dev/';
 			$verify_ssl = true;
-			if( isset( $m['verifyssl'] ) && $m['verifyssl'] == 'donotverify' ){
+			if( wped_get_option('enable_nossl') ){
 				$verify_ssl = false;
 				$url = self::NOSSL_END_POINT;
+				$info['X-WPED'] = "nossl";
 			}
 
 			$message['headers'] =  array_merge( $info , $message['headers'] );

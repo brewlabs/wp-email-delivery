@@ -109,12 +109,12 @@ class WP_Email_Delivery_Settings {
 
 		$settings['standard'] = array(
 			'title'					=> __( 'Setup', 'wp-email-delivery' ),
-			'description'			=> __( 'These are fairly standard form input fields.', 'wp-email-delivery' ),
+			'description'			=> __( 'Simple setup to get your running.', 'wp-email-delivery' ),
 			'fields'				=> array(
 				array(
 					'id' 			=> 'license_key',
 					'label'			=> __( 'License Key' , 'wp-email-delivery' ),
-					'description'	=> __( 'Please enter your key from wpemaildelivery.com.', 'wp-email-delivery' ),
+					'description'	=> __( 'Please enter your key from <a href="https://www.wpemaildelivery.com">https://www.wpemaildelivery.com</a>.', 'wp-email-delivery' ),
 					'type'			=> 'text',
 					'default'		=> '',
 					'placeholder'	=> __( 'KEY', 'wp-email-delivery' )
@@ -122,10 +122,11 @@ class WP_Email_Delivery_Settings {
 				array(
 					'id' 			=> 'enable_sending',
 					'label'			=> __( 'Enable', 'wp-email-delivery' ),
-					'description'	=> __( 'Allow <b>WP Email Delivery</b> to override the default wp_mail() function to send emails.', 'wp-email-delivery' ),
+					'description'	=> __( 'Allow <b>WP Email Delivery</b> to override the default wp_mail() function to send emails. ( We reccomend you send a few tests firsts )', 'wp-email-delivery' ),
 					'type'			=> 'checkbox',
 					'default'		=> ''
 				),
+				
 				/*
 				array(
 					'id' 			=> 'password_field',
@@ -191,35 +192,27 @@ class WP_Email_Delivery_Settings {
 			'description'			=> __( 'These are some extra input fields that maybe aren\'t as common as the others.', 'wp-email-delivery' ),
 			'fields'				=> array(
 				array(
-					'id' 			=> 'number_field',
-					'label'			=> __( 'A Number' , 'wp-email-delivery' ),
-					'description'	=> __( 'This is a standard number field - if this field contains anything other than numbers then the form will not be submitted.', 'wp-email-delivery' ),
-					'type'			=> 'number',
+					'id' 			=> 'enable_nossl',
+					'label'			=> __( 'Disable SSL Sending', 'wp-email-delivery' ),
+					'description'	=> __( 'This may be required if your host can not connect over https to the WP Email Delivery API', 'wp-email-delivery' ),
+					'type'			=> 'checkbox',
+					'default'		=> ''
+				),
+			)
+		);
+
+		$settings['testing'] = array(
+			'title'					=> __( 'Testing', 'wp-email-delivery' ),
+			'description'			=> __( 'Test WP Email Delivery sending before you activate it.', 'wp-email-delivery' ),
+			'custom_save' 			=> __( 'Send Test Email', 'wp-email-delivery' ),
+			'fields'				=> array(
+				array(
+					'id' 			=> 'test_email',
+					'label'			=> __( 'Email' , 'wp-email-delivery' ),
+					'description'	=> __( 'Email address to send test to.', 'wp-email-delivery' ),
+					'type'			=> 'text',
 					'default'		=> '',
-					'placeholder'	=> __( '42', 'wp-email-delivery' )
-				),
-				array(
-					'id' 			=> 'colour_picker',
-					'label'			=> __( 'Pick a colour', 'wp-email-delivery' ),
-					'description'	=> __( 'This uses WordPress\' built-in colour picker - the option is stored as the colour\'s hex code.', 'wp-email-delivery' ),
-					'type'			=> 'color',
-					'default'		=> '#21759B'
-				),
-				array(
-					'id' 			=> 'an_image',
-					'label'			=> __( 'An Image' , 'wp-email-delivery' ),
-					'description'	=> __( 'This will upload an image to your media library and store the attachment ID in the option field. Once you have uploaded an imge the thumbnail will display above these buttons.', 'wp-email-delivery' ),
-					'type'			=> 'image',
-					'default'		=> '',
-					'placeholder'	=> ''
-				),
-				array(
-					'id' 			=> 'multi_select_box',
-					'label'			=> __( 'A Multi-Select Box', 'wp-email-delivery' ),
-					'description'	=> __( 'A standard multi-select box - the saved data is stored as an array.', 'wp-email-delivery' ),
-					'type'			=> 'select_multi',
-					'options'		=> array( 'linux' => 'Linux', 'mac' => 'Mac', 'windows' => 'Windows' ),
-					'default'		=> array( 'linux' )
+					'placeholder'	=> __( 'delivery@wped.co', 'wp-email-delivery' )
 				)
 			)
 		);
@@ -246,9 +239,29 @@ class WP_Email_Delivery_Settings {
 				}
 			}
 
+			if(isset( $_POST[ $this->base .'test_email' ] )){
+				
+				if ( !isset( $from_email ) ) {
+					// Get the site domain and get rid of www.
+					$sitename = strtolower( $_SERVER['SERVER_NAME'] );
+					if ( substr( $sitename, 0, 4 ) == 'www.' ) {
+						$sitename = substr( $sitename, 4 );
+					}
+
+					$from_email = 'wordpress@' . $sitename;
+				}
+
+				// Plugin authors can override the potentially troublesome default
+				$from_email     = apply_filters( 'wp_mail_from'     , $from_email );
+				$headers = 'From: '. $from_email . "\r\n";
+				$this->parent->connections->mail( $_POST[ $this->base .'test_email' ], "WP Email Delivery Setup Test", "\nConnection Testing from Success.\n", $headers, "");
+			}
+
 			foreach ( $this->settings as $section => $data ) {
 
 				if ( $current_section && $current_section != $section ) continue;
+
+
 
 				// Add section to page
 				add_settings_section( $section, $data['title'], array( $this, 'settings_section' ), $this->parent->_token . '_settings' );
@@ -307,10 +320,14 @@ class WP_Email_Delivery_Settings {
 					if ( ! isset( $_GET['tab'] ) ) {
 						if ( 0 == $c ) {
 							$class .= ' nav-tab-active';
+							$button_text = isset( $data['custom_save'] ) ? $data['custom_save'] : esc_attr( __( 'Save Settings' , 'wp-email-delivery' ) ) ;
+					
 						}
 					} else {
 						if ( isset( $_GET['tab'] ) && $section == $_GET['tab'] ) {
 							$class .= ' nav-tab-active';
+							$button_text = isset( $data['custom_save'] ) ? $data['custom_save'] : esc_attr( __( 'Save Settings' , 'wp-email-delivery' ) ) ;
+					
 						}
 					}
 
@@ -339,7 +356,7 @@ class WP_Email_Delivery_Settings {
 
 				$html .= '<p class="submit">' . "\n";
 					$html .= '<input type="hidden" name="tab" value="' . esc_attr( $tab ) . '" />' . "\n";
-					$html .= '<input name="Submit" type="submit" class="button-primary" value="' . esc_attr( __( 'Save Settings' , 'wp-email-delivery' ) ) . '" />' . "\n";
+					$html .= '<input name="Submit" type="submit" class="button-primary" value="' . $button_text . '" />' . "\n";
 				$html .= '</p>' . "\n";
 			$html .= '</form>' . "\n";
 		$html .= '</div>' . "\n";

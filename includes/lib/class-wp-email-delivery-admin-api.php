@@ -69,6 +69,10 @@ class WP_Email_Delivery_Admin_API {
 
 		switch( $field['type'] ) {
 
+			case 'button':
+				$html .= '<button id="' . esc_attr( $field['id'] ) . '" >'.esc_attr( $field['display'] ).'</button>';
+			break;
+
 			case 'text':
 			case 'url':
 			case 'email':

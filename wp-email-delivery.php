@@ -2,10 +2,10 @@
 /*
  * Plugin Name: WP Email Delivery
  * Version: 1.0
- * Plugin URI: http://www.wpemaildelivery.com
+ * Plugin URI: https://www.wpemaildelivery.com
  * Description: Managed Email Delivery for WordPress
- * Author: Josh Lyford
- * Author URI: http://www.wpemaildelivery.com/
+ * Author: BrewLabs
+ * Author URI: https://www.wpemaildelivery.com/
  * Requires at least: 4.0
  * Tested up to: 4.3
  *

@@ -146,6 +146,9 @@ class WP_Email_Delivery_Connections {
 	        *  Processing supplied fields to make them valid for the Mandrill API
 	        *
 	        *************************/ 
+	        $content_type = null;
+
+
 	        	        
 		    // Checking the user-specified headers
 	            if ( empty( $message['headers'] ) ) {
@@ -189,7 +192,22 @@ class WP_Email_Delivery_Connections {
 						            $message['from_email']  = $from_email;
 						            $message['from_name']   = $from_name;						            
 						            break;
-						            
+						        case 'content-type':
+										if ( strpos( $content, ';' ) !== false ) {
+											list( $type, $charset ) = explode( ';', $content );
+											$content_type = trim( $type );
+											if ( false !== stripos( $charset, 'charset=' ) ) {
+												$charset = trim( str_replace( array( 'charset=', '"' ), '', $charset ) );
+											} elseif ( false !== stripos( $charset, 'boundary=' ) ) {
+												$boundary = trim( str_replace( array( 'BOUNDARY=', 'boundary=', '"' ), '', $charset ) );
+												$charset = '';
+											}
+										} else {
+											$content_type = trim( $content );
+										}
+										
+										
+									break;   
 					            case 'bcc':
 					                // TODO: Mandrill's API only accept one BCC address. Other addresses will be silently discarded
 					                $bcc = array_merge( (array) $bcc, explode( ',', $content ) );
@@ -206,7 +224,7 @@ class WP_Email_Delivery_Connections {
 					            	if ( !$message['important'] ) $message['important'] = ( strpos(strtolower($content),'high') !== false ) ? true : false;
 					            	break;
 					            default:
-					                if ( substr($name,0,2) == 'x-' ) {
+					                if ( substr($name,0,2) == 'x-' || substr($name,0,2) == 'X-') {
     						            $message['headers'][trim( $name )] = trim( $content );
     						        }
 						            break;
@@ -239,7 +257,7 @@ class WP_Email_Delivery_Connections {
                 //if ( empty($message['from_name'] ) ) $message['from_name']  = self::getFromName();
             
             // Checking tags.
-    		    $message['tags'] = $tags;
+    		    $message['tags'] = $this->find_tags($tags);
 		    
 		    // Checking attachments
                 if ( !empty($message['attachments']) ) {
@@ -250,14 +268,20 @@ class WP_Email_Delivery_Connections {
                 		unset($message['attachments']);
                 	}
                 }
-		    // Default values for other parameters
+		    	// Default values for other parameters
                 $message['auto_text']   = true;
-                $message['track_opens'] = $track_opens;
-                $message['track_clicks']= $track_clicks;
+                $message['track_opens'] = wped_get_option('track_opens') ? true : false;
+                $message['track_clicks']= wped_get_option('track_clicks') ? true : false;
                 
-	        // Supporting editable sections: Common transformations for the HTML part
+	        	// Supporting editable sections: Common transformations for the HTML part
 	        	//$nl2br = self::getnl2br() == 1;
-	        	$nl2br = '';
+                if ( !isset( $content_type ) ){
+					$content_type = 'text/plain';
+				}
+
+				$content_type = apply_filters( 'wp_mail_content_type', $content_type );
+
+	        	$nl2br = $content_type == 'text/plain';
 	        	$nl2br = apply_filters('wped_nl2br', $nl2br, $message);
 	        	if ( $nl2br ) {
 	                if ( is_array($message['html']) ) {
@@ -272,20 +296,37 @@ class WP_Email_Delivery_Connections {
 	                }
 	    		}
 
-            // Letting user to filter/change the message payload
+            	// Letting user to filter/change the message payload
             	$message['from_email']  = apply_filters('wp_mail_from', $message['from_email']);
 				$message['from_name']	= apply_filters('wp_mail_from_name', $message['from_name']);
+
+				if( empty( $message['from_email'] ) ){
+
+					// Get the site domain and get rid of www.
+					$sitename = strtolower( $_SERVER['SERVER_NAME'] );
+					if ( substr( $sitename, 0, 4 ) == 'www.' ) {
+						$sitename = substr( $sitename, 4 );
+					}
+
+					$message['from_email']  = 'wordpress@' . $sitename;
+				}
+
+				
+
                 $message  = apply_filters('wped_payload', $message);
                 
+
+
+
                 // if user doesn't want to process this email by wped, so be it.
                 if ( isset($message['force_native']) && $message['force_native'] ) throw new Exception('Manually falling back to native wp_mail()');
                 
-            // Setting the tags property correctly to be received by the Mandrill's API
-                //if ( !isset() !is_array($message['tags']['user']) )      $message['tags']['user']        = array();
-               // if ( !is_array($message['tags']['general']) )   $message['tags']['general']     = array();
-               // if ( !is_array($message['tags']['automatic']) ) $message['tags']['automatic']   = array();
+            	// Setting the tags property correctly to be received by the Mandrill's API
+               if ( !is_array($message['tags']['user']) )      $message['tags']['user']        = array();
+               if ( !is_array($message['tags']['general']) )   $message['tags']['general']     = array();
+               if ( !is_array($message['tags']['automatic']) ) $message['tags']['automatic']   = array();
                 
-                $message['tags'] = array(); //array_merge( $message['tags']['general'], $message['tags']['automatic'], $message['tags']['user'] );
+                $message['tags'] = array_merge( $message['tags']['general'], $message['tags']['automatic'], $message['tags']['user'] );
                 
             	// Sending the message
               	return $this->message_send( $message );
@@ -296,6 +337,43 @@ class WP_Email_Delivery_Connections {
 	    }
 	}
 
+	/**
+	 * @param string $subject
+	 * @return array
+	 */
+	public function find_tags($tags) {
+
+        // Getting general tags
+        $gtags   = array();
+        /*
+        $general_tags = self::getTags();
+		if ( !empty( $general_tags ) ) {
+		    $gtags   = explode("\n",$general_tags);		
+		    foreach ( $gtags as $index => $gtag ) {
+		        if ( empty($gtag) ) unset($gtags[$index]);
+		    }
+		    $gtags = array_values($gtags);
+		}
+		*/
+		// Finding tags based on WP Backtrace 
+		$trace  = debug_backtrace();
+		$level  = 4;        
+		$function = $trace[$level]['function'];
+
+        $wtags = array();
+		if( 'include' == $function || 'require' == $function ) {
+
+			$file = basename($trace[$level]['args'][0]);
+			$wtags[] = "wp_{$file}";
+		}
+		else {
+			if( isset( $trace[$level]['class'] ) )
+				$function = $trace[$level]['class'].$trace[$level]['type'].$function;
+			$wtags[] = "wp_{$function}";
+		}
+		
+		return array('user' => $tags, 'general' => $gtags, 'automatic' => $wtags);
+	}
 
 	public function message_send($message){
 			$info = array(
@@ -317,6 +395,7 @@ class WP_Email_Delivery_Connections {
 			$message['metadata'] = array(
 			    'return'=> home_url()
 			);
+
 
 		    
 		  error_log(print_r($message,true));

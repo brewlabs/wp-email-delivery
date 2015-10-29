@@ -77,7 +77,22 @@ module.exports = function( grunt ){
 				tasks: ['uglify']
 			}
 		},
-
+		makepot: {
+	        target: {
+	            options: {
+               
+                domainPath: '/lang',
+                mainFile: 'wp-email-delivery.php',
+                potFilename: 'wp-email-delivery.pot',
+                processPot: function( pot, options ) {
+                    pot.headers['report-msgid-bugs-to'] = 'https://github.com/brewlabs/wp-email-delivery/issues';
+                    pot.headers['language-team'] = 'Delivery <help@wpemaildelivery.com>';
+                    return pot;
+                },
+                type: 'wp-plugin'
+            }
+        	}
+    	}
 	});
 
 	// Load NPM tasks to be used here
@@ -85,7 +100,7 @@ module.exports = function( grunt ){
 	grunt.loadNpmTasks( 'grunt-contrib-cssmin' );
 	grunt.loadNpmTasks( 'grunt-contrib-uglify' );
 	grunt.loadNpmTasks( 'grunt-contrib-watch' );
-
+	grunt.loadNpmTasks( 'grunt-wp-i18n' );
 	// Register tasks
 	grunt.registerTask( 'default', [
 		'less',

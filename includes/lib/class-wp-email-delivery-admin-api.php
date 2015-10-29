@@ -72,11 +72,12 @@ class WP_Email_Delivery_Admin_API {
 			case 'button':
 				$html .= '<button id="' . esc_attr( $field['id'] ) . '" >'.esc_attr( $field['display'] ).'</button>';
 			break;
+			
 
 			case 'text':
 			case 'url':
 			case 'email':
-				$html .= '<input id="' . esc_attr( $field['id'] ) . '" type="text" name="' . esc_attr( $option_name ) . '" placeholder="' . esc_attr( $field['placeholder'] ) . '" value="' . esc_attr( $data ) . '" />' . "\n";
+				$html .= '<input id="' . esc_attr( $field['id'] ) . '" class="regular-text code"  type="text" name="' . esc_attr( $option_name ) . '" placeholder="' . esc_attr( $field['placeholder'] ) . '" value="' . esc_attr( $data ) . '" />' . "\n";
 			break;
 
 			case 'password':

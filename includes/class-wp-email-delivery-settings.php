@@ -109,7 +109,7 @@ class WP_Email_Delivery_Settings {
 
 		$settings['standard'] = array(
 			'title'					=> __( 'Setup', 'wp-email-delivery' ),
-			'description'			=> __( 'Simple setup to get your running.', 'wp-email-delivery' ),
+			'description'			=> __( 'Just enter your API key and enjoy sending via our API. You don\'t even need to worry about your hosting provider blocking SMTP ports. <br>WPED doesn\'t use SMTP so your hosting provider can\'t block it.', 'wp-email-delivery' ),
 			'fields'				=> array(
 				array(
 					'id' 			=> 'license_key',
@@ -189,8 +189,23 @@ class WP_Email_Delivery_Settings {
 
 		$settings['extra'] = array(
 			'title'					=> __( 'Advanced', 'wp-email-delivery' ),
-			'description'			=> __( 'These are some extra input fields that maybe aren\'t as common as the others.', 'wp-email-delivery' ),
+			'description'			=> __( 'Some extra features to make WP Email Delivery even better.', 'wp-email-delivery' ),
 			'fields'				=> array(
+				array(
+					'id' 			=> 'track_opens',
+					'label'			=> __( 'Track Opens', 'wp-email-delivery' ),
+					'description'	=> __( 'WPED can track your emails and who opens them. ( Reports to view opens coming soon ) ', 'wp-email-delivery' ),
+					'type'			=> 'checkbox',
+					'default'		=> ''
+				),
+				array(
+					'id' 			=> 'track_clicks',
+					'label'			=> __( 'Track Clicks', 'wp-email-delivery' ),
+					'description'	=> __( 'WPED can track your emails and who clicks on links within them. ( Reports to view clicks coming soon ) ', 'wp-email-delivery' ),
+					'type'			=> 'checkbox',
+					'default'		=> ''
+				),
+				
 				array(
 					'id' 			=> 'enable_nossl',
 					'label'			=> __( 'Disable SSL Sending', 'wp-email-delivery' ),
@@ -204,7 +219,7 @@ class WP_Email_Delivery_Settings {
 		$settings['testing'] = array(
 			'title'					=> __( 'Testing', 'wp-email-delivery' ),
 			'description'			=> __( 'Test WP Email Delivery sending before you activate it.', 'wp-email-delivery' ),
-			'custom_save' 			=> __( 'Send Test Email', 'wp-email-delivery' ),
+			'custom_save' 			=> __( 'Save & Send Test Email', 'wp-email-delivery' ),
 			'fields'				=> array(
 				array(
 					'id' 			=> 'test_email',
@@ -253,8 +268,8 @@ class WP_Email_Delivery_Settings {
 
 				// Plugin authors can override the potentially troublesome default
 				$from_email     = apply_filters( 'wp_mail_from'     , $from_email );
-				$headers = 'From: '. $from_email . "\r\n";
-				$this->parent->connections->mail( $_POST[ $this->base .'test_email' ], "WP Email Delivery Setup Test", "\nConnection Testing from Success.\n", $headers, "");
+				$headers = array('From: '. $from_email . "\r\n", 'Content-type: text/html');
+				$this->parent->connections->mail( $_POST[ $this->base .'test_email' ], "WP Email Delivery Setup Test", wped_basic_test_email(), $headers, "");
 			}
 
 			foreach ( $this->settings as $section => $data ) {

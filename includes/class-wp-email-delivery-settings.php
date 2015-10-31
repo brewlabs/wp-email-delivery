@@ -192,6 +192,22 @@ class WP_Email_Delivery_Settings {
 			'description'			=> __( 'Some extra features to make WP Email Delivery even better.', 'wp-email-delivery' ),
 			'fields'				=> array(
 				array(
+					'id' 			=> 'custom_name',
+					'label'			=> __( 'From Name', 'wp-email-delivery' ),
+					'description'	=> __( 'This form name wil be used if one is not set when emails are sent to wp_mail() ', 'wp-email-delivery' ),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'   => ''
+				),
+				array(
+					'id' 			=> 'custom_from',
+					'label'			=> __( 'From Email', 'wp-email-delivery' ),
+					'description'	=> __( 'This form email address wil be used if one is not set when emails are sent to wp_mail() ', 'wp-email-delivery' ),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'   => ''
+				),
+				array(
 					'id' 			=> 'track_opens',
 					'label'			=> __( 'Track Opens', 'wp-email-delivery' ),
 					'description'	=> __( 'WPED can track your emails and who opens them. ( Reports to view opens coming soon ) ', 'wp-email-delivery' ),
@@ -232,6 +248,34 @@ class WP_Email_Delivery_Settings {
 			)
 		);
 
+		$settings['DNS'] = array(
+			'title'					=> __( 'DNS ( SPF & DKIM )', 'wp-email-delivery' ),
+			'description'			=> __( 'Setting up SPF and DKIM require access to your DNS records. Even if you don\'t have access to these records you can still use WP Email Delivery.' , 'wp-email-delivery' ),
+			'custom_save' 			=> 'none',
+			'fields'				=> array(
+				array(
+					'id' 			=> 'spf',
+					'label'			=> __( 'SPF Record' , 'wp-email-delivery' ),
+					'description'	=> __( '<br>If you don\'t yet have an SPF record, you\'ll want to add one for your domain. At a minimum, the value should be the entry above if you\'re only sending mail through WP Email Delivery for that domain.<br><br>If you already have a TXT record with SPF information, you\'ll need to add WPED\'s servers to that record by adding <strong>include:spf.wped.co</strong> in the record (before the last operator, which is usually ?all, ~all, or -all).', 'wp-email-delivery' ),
+					'type'			=> 'readonly',
+					'default'		=> 'v=spf1 include:spf.wped.co ?all',
+					'placeholder'	=> ''
+				),
+				array(
+					'id' 			=> 'dkim',
+					'label'			=> __( 'DKIM Record' , 'wp-email-delivery' ),
+					'description'	=> __( 'Coming very soon. If you need DKIM now, please contact us.', 'wp-email-delivery' ),
+					'type'			=> 'readonly',
+					'default'		=> '',
+					'placeholder'	=> ''
+				)
+			)
+		);
+
+
+
+
+
 		$settings = apply_filters( $this->parent->_token . '_settings_fields', $settings );
 
 		return $settings;
@@ -256,19 +300,7 @@ class WP_Email_Delivery_Settings {
 
 			if(isset( $_POST[ $this->base .'test_email' ] )){
 				
-				if ( !isset( $from_email ) ) {
-					// Get the site domain and get rid of www.
-					$sitename = strtolower( $_SERVER['SERVER_NAME'] );
-					if ( substr( $sitename, 0, 4 ) == 'www.' ) {
-						$sitename = substr( $sitename, 4 );
-					}
-
-					$from_email = 'wordpress@' . $sitename;
-				}
-
-				// Plugin authors can override the potentially troublesome default
-				$from_email     = apply_filters( 'wp_mail_from'     , $from_email );
-				$headers = array('From: '. $from_email . "\r\n", 'Content-type: text/html');
+				$headers = array('Content-type: text/html');
 				$this->parent->connections->mail( $_POST[ $this->base .'test_email' ], "WP Email Delivery Setup Test", wped_basic_test_email(), $headers, "");
 			}
 
@@ -368,11 +400,12 @@ class WP_Email_Delivery_Settings {
 				settings_fields( $this->parent->_token . '_settings' );
 				do_settings_sections( $this->parent->_token . '_settings' );
 				$html .= ob_get_clean();
-
-				$html .= '<p class="submit">' . "\n";
-					$html .= '<input type="hidden" name="tab" value="' . esc_attr( $tab ) . '" />' . "\n";
-					$html .= '<input name="Submit" type="submit" class="button-primary" value="' . $button_text . '" />' . "\n";
-				$html .= '</p>' . "\n";
+				if($button_text != 'none'){
+					$html .= '<p class="submit">' . "\n";
+						$html .= '<input type="hidden" name="tab" value="' . esc_attr( $tab ) . '" />' . "\n";
+						$html .= '<input name="Submit" type="submit" class="button-primary" value="' . $button_text . '" />' . "\n";
+					$html .= '</p>' . "\n";
+				}
 			$html .= '</form>' . "\n";
 		$html .= '</div>' . "\n";
 

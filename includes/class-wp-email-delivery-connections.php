@@ -53,6 +53,16 @@ class WP_Email_Delivery_Connections {
 		return false;
 	} // End enqueue_styles ()
 
+
+	public function is_setup(){
+		$key = wped_get_option('license_key');
+		if( $key && $key != ''){
+			return true;
+		}
+		return false;
+	}
+
+
 	//Not yet implemented in UI
 	public function custom_reply_to(){
 		return '';
@@ -139,7 +149,7 @@ class WP_Email_Delivery_Connections {
 	public function wped_mail( $message, $tags = array(), $template_name = '', $track_opens = true, $track_clicks = true ) {
 	
 	    try {
-	        if ( !$this->is_connected() ) throw new Exception('Invalid API Key');
+	        if ( !$this->is_setup() ) throw new Exception('Invalid API Key');
 	        
 	        /************
 	        *
@@ -301,15 +311,30 @@ class WP_Email_Delivery_Connections {
 				$message['from_name']	= apply_filters('wp_mail_from_name', $message['from_name']);
 
 				if( empty( $message['from_email'] ) ){
+					$custom_email = wped_get_option('custom_from');
+					if(is_email($custom_email)){
+						$message['from_email']  = $custom_email;
+					} else {
 
 					// Get the site domain and get rid of www.
-					$sitename = strtolower( $_SERVER['SERVER_NAME'] );
-					if ( substr( $sitename, 0, 4 ) == 'www.' ) {
-						$sitename = substr( $sitename, 4 );
-					}
+						$sitename = strtolower( $_SERVER['SERVER_NAME'] );
+						if ( substr( $sitename, 0, 4 ) == 'www.' ) {
+							$sitename = substr( $sitename, 4 );
+						}
 
-					$message['from_email']  = 'wordpress@' . $sitename;
+						$message['from_email']  = 'wordpress@' . $sitename;
+					}
 				}
+
+				if( empty( $message['from_name'] ) ){
+					$custom_name = wped_get_option('custom_name');
+					if(!empty($custom_name) && $custom_name != false ){
+						$message['from_name']  = $custom_name;
+					} else {
+						$message['from_name']  = __('WordPress','wp-email-delivery');
+					}
+				}
+
 
 				
 
@@ -398,8 +423,7 @@ class WP_Email_Delivery_Connections {
 
 
 		    
-		  error_log(print_r($message,true));
-			
+		 	
 			$response = wp_remote_post( $url , array(
 				'method' => 'POST',
 				'timeout' => 45,
@@ -412,7 +436,7 @@ class WP_Email_Delivery_Connections {
 				'cookies' => array()
 			    )
 			);
-			error_log(print_r($response,true));
+			
 			if( is_wp_error( $response ) ) {
 			   	$error_message = $response->get_error_message();
 			   	error_log( date('Y-m-d H:i:s') . " wped::message_send: Exception Caught => ". $error_message ."\n" );

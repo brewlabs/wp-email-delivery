@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Email Delivery
-Version: 0.9
+Version: 1.0
 Plugin URI: https://www.wpemaildelivery.com
 Description: Managed Email Delivery for WordPress
 Author: BrewLabs
@@ -38,7 +38,7 @@ class WPED_Exception extends Exception {}
  * @return object WP_Email_Delivery
  */
 function WEPD () {
-	$instance = WP_Email_Delivery::instance( __FILE__, '0.9' );
+	$instance = WP_Email_Delivery::instance( __FILE__, '1.0' );
 
 	if ( is_null( $instance->settings ) ) {
 		$instance->settings = WP_Email_Delivery_Settings::instance( $instance );
@@ -51,7 +51,7 @@ function WEPD () {
 	if( $instance->connections->is_connected() ) {
 
 		function wp_mail( $to, $subject, $message, $headers = '', $attachments = array() ) {
-			$instance = WP_Email_Delivery::instance( __FILE__, '0.9' );
+			$instance = WP_Email_Delivery::instance( __FILE__, '1.0' );
 			try {
 
 				$sent = $instance->connections->mail( $to, $subject, $message, $headers, $attachments );

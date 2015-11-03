@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Email Delivery
-Version: 1.0.1
+Version: 0.9
 Plugin URI: https://www.wpemaildelivery.com
 Description: Managed Email Delivery for WordPress
 Author: BrewLabs
@@ -11,10 +11,6 @@ Tested up to: 4.3.1
 
 Text Domain: wp-email-delivery
 Domain Path: /lang/
-
-@package WordPress
-@author Josh LYford
-@since 1.0.0
 */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -42,7 +38,7 @@ class WPED_Exception extends Exception {}
  * @return object WP_Email_Delivery
  */
 function WEPD () {
-	$instance = WP_Email_Delivery::instance( __FILE__, '1.0.0' );
+	$instance = WP_Email_Delivery::instance( __FILE__, '0.9' );
 
 	if ( is_null( $instance->settings ) ) {
 		$instance->settings = WP_Email_Delivery_Settings::instance( $instance );
@@ -55,7 +51,7 @@ function WEPD () {
 	if( $instance->connections->is_connected() ) {
 
 		function wp_mail( $to, $subject, $message, $headers = '', $attachments = array() ) {
-			$instance = WP_Email_Delivery::instance( __FILE__, '1.0.0' );
+			$instance = WP_Email_Delivery::instance( __FILE__, '0.9' );
 			try {
 
 				$sent = $instance->connections->mail( $to, $subject, $message, $headers, $attachments );

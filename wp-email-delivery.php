@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Email Delivery
-Version: 1.0.0
+Version: 1.0
 Plugin URI: https://www.wpemaildelivery.com
 Description: Managed Email Delivery for WordPress
 Author: BrewLabs

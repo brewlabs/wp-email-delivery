@@ -1,21 +1,21 @@
 <?php
 /*
- * Plugin Name: WP Email Delivery
- * Version: 1.0.0
- * Plugin URI: https://www.wpemaildelivery.com
- * Description: Managed Email Delivery for WordPress
- * Author: BrewLabs
- * Author URI: https://www.wpemaildelivery.com/
- * Requires at least: 4.0
- * Tested up to: 4.3
- *
- * Text Domain: wp-email-delivery
- * Domain Path: /lang/
- *
- * @package WordPress
- * @author Josh LYford
- * @since 1.0.0
- */
+Plugin Name: WP Email Delivery
+Version: 1.0.0
+Plugin URI: https://www.wpemaildelivery.com
+Description: Managed Email Delivery for WordPress
+Author: BrewLabs
+Author URI: https://www.wpemaildelivery.com/
+Requires at least: 4.0
+Tested up to: 4.3
+
+Text Domain: wp-email-delivery
+Domain Path: /lang/
+
+@package WordPress
+@author Josh LYford
+@since 1.0.0
+*/
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

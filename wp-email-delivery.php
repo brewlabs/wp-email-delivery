@@ -7,7 +7,7 @@ Author: BrewLabs
 Author URI: https://www.wpemaildelivery.com/
 Requires at least: 4.0
 Tested up to: 4.3.1
-Version: 1.0.2
+Version: 1.0.3
 
 Text Domain: wp-email-delivery
 Domain Path: /lang/
@@ -38,7 +38,7 @@ class WPED_Exception extends Exception {}
  * @return object WP_Email_Delivery
  */
 function WEPD () {
-	$instance = WP_Email_Delivery::instance( __FILE__, '1.0.2' );
+	$instance = WP_Email_Delivery::instance( __FILE__, '1.0.3' );
 
 	if ( is_null( $instance->settings ) ) {
 		$instance->settings = WP_Email_Delivery_Settings::instance( $instance );
@@ -60,7 +60,7 @@ function WEPD () {
 		
 
 		function wp_mail( $to, $subject, $message, $headers = '', $attachments = array() ) {
-			$instance = WP_Email_Delivery::instance( __FILE__, '1.0.2' );
+			$instance = WP_Email_Delivery::instance( __FILE__, '1.0.3' );
 			try {
 
 				$sent = $instance->connections->mail( $to, $subject, $message, $headers, $attachments );

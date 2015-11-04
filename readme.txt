@@ -4,7 +4,7 @@ Contributors: brewlabs, joshl, jaredharbour, itdoug
 Tags: newsletter, newsletters, manager newsletter, newsletter signup, newsletter widget, subscribers, subscription, email marketing, email, emailing, smtp, sendpress, sendgrid, mandrill, mailchimp
 Requires at least: 3.7
 Tested up to: 4.3
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -45,7 +45,7 @@ This plugin and service is designed to help you reach your customers via email w
 
 == Changelog ==
 
-= 1.0.2 - 2015.11.4 =
+= 1.0.3 - 2015.11.4 =
 * Fix: Automated release test
 
 = 1.0.1 - 2015.11.4 =
@@ -57,7 +57,7 @@ This plugin and service is designed to help you reach your customers via email w
 
 == Upgrade Notice ==
 
-= 1.0.1 =
+= 1.0.3 =
 Fix issue for conflicting wp_mail calls.
 
 = 1.0 =

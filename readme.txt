@@ -1,10 +1,10 @@
 === WP Email Delivery ===
-Contributors: brewlabs, joshl, jaredharbour, itdoug
 Plugin URI: https://www.wpemaildelivery.com
-Tags: wordpress email, email, delivery, wp email delivery
-Requires at least: 4.0
-Tested up to: 4.3.1
-Stable tag: 1.0.1
+Contributors: brewlabs, joshl, jaredharbour, itdoug
+Tags: newsletter, newsletters, manager newsletter, newsletter signup, newsletter widget, subscribers, subscription, email marketing, email, emailing, smtp, sendpress, sendgrid, mandrill, mailchimp
+Requires at least: 3.7
+Tested up to: 4.3
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -44,6 +44,9 @@ This plugin and service is designed to help you reach your customers via email w
 
 
 == Changelog ==
+
+= 1.0.2 - 2015.11.4 =
+* Fix: Automated release test
 
 = 1.0.1 - 2015.11.4 =
 * Fix: Conflict with other plugins using wp_mail()

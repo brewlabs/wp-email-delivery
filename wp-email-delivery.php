@@ -1,13 +1,13 @@
 <?php
 /*
 Plugin Name: WP Email Delivery
-Version: 1.0.1
 Plugin URI: https://www.wpemaildelivery.com
 Description: Managed Email Delivery for WordPress
 Author: BrewLabs
 Author URI: https://www.wpemaildelivery.com/
 Requires at least: 4.0
 Tested up to: 4.3.1
+Version: 1.0.1
 
 Text Domain: wp-email-delivery
 Domain Path: /lang/

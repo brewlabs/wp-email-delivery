@@ -81,6 +81,7 @@ class WP_Email_Delivery {
 
 	public $connections;
 
+	public $wp_mail_error;
 
 	/**
 	 * Constructor function.

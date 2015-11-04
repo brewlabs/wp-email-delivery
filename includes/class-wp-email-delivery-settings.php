@@ -194,7 +194,7 @@ class WP_Email_Delivery_Settings {
 				array(
 					'id' 			=> 'custom_name',
 					'label'			=> __( 'From Name', 'wp-email-delivery' ),
-					'description'	=> __( 'This form name wil be used if one is not set when emails are sent to wp_mail() ', 'wp-email-delivery' ),
+					'description'	=> __( 'This from name wil be used if one is not set when emails are sent to wp_mail() ', 'wp-email-delivery' ),
 					'type'			=> 'text',
 					'default'		=> '',
 					'placeholder'   => ''
@@ -202,7 +202,7 @@ class WP_Email_Delivery_Settings {
 				array(
 					'id' 			=> 'custom_from',
 					'label'			=> __( 'From Email', 'wp-email-delivery' ),
-					'description'	=> __( 'This form email address wil be used if one is not set when emails are sent to wp_mail() ', 'wp-email-delivery' ),
+					'description'	=> __( 'This from email address wil be used if one is not set when emails are sent to wp_mail() ', 'wp-email-delivery' ),
 					'type'			=> 'text',
 					'default'		=> '',
 					'placeholder'   => ''
@@ -348,7 +348,9 @@ class WP_Email_Delivery_Settings {
 		// Build page HTML
 		$html = '<div class="wrap" id="' . $this->parent->_token . '_settings">' . "\n";
 			$html .= '<h2>' . __( 'WP Email Delivery' , 'wp-email-delivery' ) . ' <small>v'.$this->parent->_version.'</small></h2>' . "\n";
-
+			if(isset($this->parent->wp_mail_error)){
+				$html .= '</p>'. $this->parent->wp_mail_error .'</p>';
+			}
 			$tab = '';
 			if ( isset( $_GET['tab'] ) && $_GET['tab'] ) {
 				$tab .= $_GET['tab'];

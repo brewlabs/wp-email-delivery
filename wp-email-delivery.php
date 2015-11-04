@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Email Delivery
-Version: 1.0
+Version: 1.0.1
 Plugin URI: https://www.wpemaildelivery.com
 Description: Managed Email Delivery for WordPress
 Author: BrewLabs
@@ -38,7 +38,7 @@ class WPED_Exception extends Exception {}
  * @return object WP_Email_Delivery
  */
 function WEPD () {
-	$instance = WP_Email_Delivery::instance( __FILE__, '1.0' );
+	$instance = WP_Email_Delivery::instance( __FILE__, '1.0.1' );
 
 	if ( is_null( $instance->settings ) ) {
 		$instance->settings = WP_Email_Delivery_Settings::instance( $instance );
@@ -48,10 +48,19 @@ function WEPD () {
 		$instance->connections = WP_Email_Delivery_Connections::instance( $instance );
 	}
 
+	if (function_exists ( 'wp_mail' )) {
+			$instance->wp_mail_error = __('The function wp_mail() is already in use by another plugin. WPED will not be able to send for you and has been disabled. ', 'wp-email-delivery');
+			wped_set_option('enable_sending', false);
+			return $instance;
+		}
+
+
 	if( $instance->connections->is_connected() ) {
+		
+		
 
 		function wp_mail( $to, $subject, $message, $headers = '', $attachments = array() ) {
-			$instance = WP_Email_Delivery::instance( __FILE__, '1.0' );
+			$instance = WP_Email_Delivery::instance( __FILE__, '1.0.1' );
 			try {
 
 				$sent = $instance->connections->mail( $to, $subject, $message, $headers, $attachments );

@@ -6,6 +6,11 @@ function wped_get_option( $key ){
 	}
 }
 
+function wped_set_option( $key , $value ){
+  if($key != ''){
+    return update_option('wped_' . $key , $value);
+  }
+}
 
 
 

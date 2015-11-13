@@ -69,7 +69,7 @@ class WP_Email_Delivery_Connections {
 	}
 
 
-	public function mail( $to, $subject, $html, $headers = '', $attachments = array(), 
+	public function mail( $to, $subject, $message, $headers = '', $attachments = array(), 
 	                        $tags = array(), 
 	                        $from_name = '', 
 	                        $from_email = '', 
@@ -100,8 +100,8 @@ class WP_Email_Delivery_Connections {
 		//if ( $track_clicks === null ) $track_clicks = self::getTrackClicks();
 		 
         try {
-        	extract( apply_filters( 'wp_mail', compact( 'to', 'subject', 'html', 'headers', 'attachments' ) ) );
-        	$message = compact('html', 'subject', 'from_name', 'from_email', 'to', 'headers', 'attachments', 
+        	extract( apply_filters( 'wp_mail', compact( 'to', 'subject', 'message', 'headers', 'attachments' ) ) );
+        	$message2 = compact('subject', 'from_name', 'from_email', 'to', 'headers', 'attachments', 
                                     'url_strip_qs', 
                                     'merge', 
                                     'global_merge_vars', 
@@ -122,7 +122,8 @@ class WP_Email_Delivery_Connections {
         							'send_at',
         							'async'        	
                                     );
-            return $this->wped_mail($message, $tags, $template_name, $track_opens, $track_clicks);
+        	$message2['html'] = $message;
+            return $this->wped_mail($message2, $tags, $template_name, $track_opens, $track_clicks);
         } catch ( Exception $e ) {
 	        error_log( "\nwped->::mail: Exception Caught => ".$e->getMessage()."\n" );
             return new WP_Error( $e->getMessage() );

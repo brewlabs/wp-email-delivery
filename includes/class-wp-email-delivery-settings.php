@@ -91,14 +91,14 @@ class WP_Email_Delivery_Settings {
 		      delete_site_option($option);
 		    }
 		  }
-
-		  $tab = '';
+		  $red = array('page' => $this->parent->_token . '_settings','settings-updated' => 'true');
+		 
 			if ( isset( $_POST['tab'] ) && $_POST['tab'] ) {
-				$tab .= $_POST['tab'];
+				$red['tab'] = $_POST['tab'];
 			}
+			
 		  // At last we redirect back to our options page.
-		  wp_redirect(add_query_arg(array('page' => $this->parent->_token . '_settings',
-		       'tab' => $tab,'settings-updated' => 'true'), network_admin_url('settings.php')));
+		  wp_redirect(add_query_arg( $red , network_admin_url('settings.php')));
 		  exit;
 	}
 

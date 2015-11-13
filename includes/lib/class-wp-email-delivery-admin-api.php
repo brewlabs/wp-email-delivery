@@ -49,8 +49,7 @@ class WP_Email_Delivery_Admin_API {
 
 			// Get saved option
 			$option_name .= $field['id'];
-			$option = get_option( $option_name );
-
+			$option = wped_get_option($option_name);
 			// Get data to display in field
 			if ( isset( $option ) ) {
 				$data = $option;
@@ -111,7 +110,11 @@ class WP_Email_Delivery_Admin_API {
 				if ( $data && 'on' == $data ) {
 					$checked = 'checked="checked"';
 				}
-				$html .= '<input id="' . esc_attr( $field['id'] ) . '" type="' . esc_attr( $field['type'] ) . '" name="' . esc_attr( $option_name ) . '" ' . $checked . '/>' . "\n";
+				if(isset($field['disable']) && $field['disable']){
+					$disable = ' disabled ';
+				}
+
+				$html .= '<input '.$disable.' id="' . esc_attr( $field['id'] ) . '" type="' . esc_attr( $field['type'] ) . '" name="' . esc_attr( $option_name ) . '" ' . $checked . '/>' . "\n";
 			break;
 
 			case 'checkbox_multi':

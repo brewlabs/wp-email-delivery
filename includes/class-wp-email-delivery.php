@@ -272,8 +272,21 @@ class WP_Email_Delivery {
 	public static function instance ( $file = '', $version = '1.0.0' ) {
 		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self( $file, $version );
+		} else {
+			return self::$_instance;
 		}
+
+
 		self::$_instance->setup_constants();
+
+		if ( is_null( $instance->settings ) ) {
+			self::$_instance->settings = WP_Email_Delivery_Settings::instance( self::$_instance );
+		}
+
+		if ( is_null( $instance->connections ) ) {
+			self::$_instance->connections = WP_Email_Delivery_Connections::instance( self::$_instance );
+		}
+
 		return self::$_instance;
 	} // End instance ()
 

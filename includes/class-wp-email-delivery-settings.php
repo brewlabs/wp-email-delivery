@@ -399,7 +399,8 @@ class WP_Email_Delivery_Settings {
 		if( !WPED()->connections->is_setup() ){
 			wped_set_option('enable_sending', false);
 		}
-
+		
+		$button_text = esc_attr( __( 'Save Settings' , 'wp-email-delivery' ) );
 		// Build page HTML
 		$html = '<div class="wrap" id="' . $this->parent->_token . '_settings">' . "\n";
 			$html .= '<h2>' . __( 'WP Email Delivery' , 'wp-email-delivery' ) . ' <small>v'.$this->parent->_version.'</small></h2>' . "\n";

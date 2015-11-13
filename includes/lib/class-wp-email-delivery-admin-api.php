@@ -110,11 +110,13 @@ class WP_Email_Delivery_Admin_API {
 				if ( $data && 'on' == $data ) {
 					$checked = 'checked="checked"';
 				}
+				$disable = '';
 				if(isset($field['disable']) && $field['disable']){
 					$disable = ' disabled ';
 				}
 
 				$html .= '<input '.$disable.' id="' . esc_attr( $field['id'] ) . '" type="' . esc_attr( $field['type'] ) . '" name="' . esc_attr( $option_name ) . '" ' . $checked . '/>' . "\n";
+				$disable = '';
 			break;
 
 			case 'checkbox_multi':

@@ -279,11 +279,11 @@ class WP_Email_Delivery {
 
 		self::$_instance->setup_constants();
 
-		if ( is_null( $instance->settings ) ) {
+		if ( is_null( self::$_instance->settings ) ) {
 			self::$_instance->settings = WP_Email_Delivery_Settings::instance( self::$_instance );
 		}
 
-		if ( is_null( $instance->connections ) ) {
+		if ( is_null( self::$_instance->connections ) ) {
 			self::$_instance->connections = WP_Email_Delivery_Connections::instance( self::$_instance );
 		}
 

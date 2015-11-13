@@ -47,8 +47,13 @@ class WP_Email_Delivery_Settings {
 		// Register plugin settings
 		add_action( 'admin_init' , array( $this, 'register_settings' ) );
 
-		// Add settings page to menu
-		add_action( 'admin_menu' , array( $this, 'add_menu_item' ) );
+		if(! wped_is_network_activated() ){
+			// Add settings page to menu
+			add_action( 'admin_menu' , array( $this, 'add_menu_item' ) );
+		} else {
+			add_filter('network_admin_menu',  array( $this, 'add_network_menu_item' ) );
+			add_action('network_admin_edit_'. $this->parent->_token . '_settings',  array( $this, 'network_admin_save' ) );
+		}
 
 		// Add settings link to plugins page
 		add_filter( 'plugin_action_links_' . plugin_basename( $this->parent->file ) , array( $this, 'add_settings_link' ) );
@@ -62,6 +67,41 @@ class WP_Email_Delivery_Settings {
 		$this->settings = $this->settings_fields();
 	}
 
+
+	public function network_admin_save(){
+			
+		  check_admin_referer($this->parent->_token . '_settings-options');
+		  // This is the list of registered options.
+		  global $new_whitelist_options;
+		  $options = $new_whitelist_options[$this->parent->_token . '_settings'];
+		  // Go through the posted data and save only our options. This is a generic
+		  // way to do this, but you may want to address the saving of each option
+		  // individually.
+		 
+		  foreach ($options as $option) {
+		    if (isset($_POST[$option])) {
+		      // If we registered a callback function to sanitizes the option's
+		      // value it is where we call it (see register_setting).
+		      $option_value = apply_filters('sanitize_option_' . $option_name, $_POST[$option]);
+		      // And finally we save our option with the site's options.
+		      update_site_option($option, $option_value);
+		    } else {
+		      // If the option is not here then delete it. It depends on how you
+		      // want to manage your defaults however.
+		      delete_site_option($option);
+		    }
+		  }
+
+		  $tab = '';
+			if ( isset( $_POST['tab'] ) && $_POST['tab'] ) {
+				$tab .= $_POST['tab'];
+			}
+		  // At last we redirect back to our options page.
+		  wp_redirect(add_query_arg(array('page' => $this->parent->_token . '_settings',
+		       'tab' => $tab,'settings-updated' => 'true'), network_admin_url('settings.php')));
+		  exit;
+	}
+
 	/**
 	 * Add settings page to admin menu
 	 * @return void
@@ -69,6 +109,15 @@ class WP_Email_Delivery_Settings {
 	public function add_menu_item () {
 		$page = add_options_page( __( 'WP Email Delivery', 'wp-email-delivery' ) , __( 'WP Email Delivery', 'wp-email-delivery' ) , 'manage_options' , $this->parent->_token . '_settings' ,  array( $this, 'settings_page' ) );
 		add_action( 'admin_print_styles-' . $page, array( $this, 'settings_assets' ) );
+	}
+
+	/**
+	 * Add settings page to admin menu
+	 * @return void
+	 */
+	public function add_network_menu_item () {
+		$page =  add_submenu_page('settings.php',  __( 'WP Email Delivery', 'wp-email-delivery' ) , __( 'WP Email Delivery', 'wp-email-delivery' ) , 'manage_network_options' , $this->parent->_token . '_settings' ,  array( $this, 'settings_page' ) );
+		add_action( 'admin_print_styles-' . $page, array( $this, 'settings_assets' ) );	
 	}
 
 	/**
@@ -107,6 +156,8 @@ class WP_Email_Delivery_Settings {
 	 */
 	private function settings_fields () {
 
+		
+
 		$settings['standard'] = array(
 			'title'					=> __( 'Setup', 'wp-email-delivery' ),
 			'description'			=> __( 'Just enter your API key and enjoy sending via our API. You don\'t even need to worry about your hosting provider blocking SMTP ports. <br>WPED doesn\'t use SMTP so your hosting provider can\'t block it.', 'wp-email-delivery' ),
@@ -117,14 +168,15 @@ class WP_Email_Delivery_Settings {
 					'description'	=> __( 'Please enter your key from <a href="https://www.wpemaildelivery.com">https://www.wpemaildelivery.com</a>.', 'wp-email-delivery' ),
 					'type'			=> 'text',
 					'default'		=> '',
-					'placeholder'	=> __( 'KEY', 'wp-email-delivery' )
+					'placeholder'	=> __( 'WPED-XXXXXXXXXXXXXXXXXXXXXXXXXX', 'wp-email-delivery' )
 				),
 				array(
 					'id' 			=> 'enable_sending',
 					'label'			=> __( 'Enable', 'wp-email-delivery' ),
 					'description'	=> __( 'Allow <b>WP Email Delivery</b> to override the default wp_mail() function to send emails. ( We reccomend you send a few tests firsts )', 'wp-email-delivery' ),
 					'type'			=> 'checkbox',
-					'default'		=> ''
+					'default'		=> '',
+					'disable'		=> !WPED()->connections->is_setup()
 				),
 				
 				/*
@@ -344,7 +396,11 @@ class WP_Email_Delivery_Settings {
 	 * @return void
 	 */
 	public function settings_page () {
-
+		if( !WPED()->connections->is_setup() ){
+			wped_set_option('enable_sending', false);
+		}
+		
+		$button_text = esc_attr( __( 'Save Settings' , 'wp-email-delivery' ) );
 		// Build page HTML
 		$html = '<div class="wrap" id="' . $this->parent->_token . '_settings">' . "\n";
 			$html .= '<h2>' . __( 'WP Email Delivery' , 'wp-email-delivery' ) . ' <small>v'.$this->parent->_version.'</small></h2>' . "\n";
@@ -394,8 +450,12 @@ class WP_Email_Delivery_Settings {
 
 				$html .= '</h2>' . "\n";
 			}
-
-			$html .= '<form method="post" action="options.php" enctype="multipart/form-data">' . "\n";
+			$target = "options.php";
+			if(wped_is_network_activated()){
+				$target = 'edit.php?action='.$this->parent->_token . '_settings';
+			} 
+			
+			$html .= '<form method="post" action="'.$target.'" enctype="multipart/form-data">' . "\n";
 
 				// Get settings fields
 				ob_start();

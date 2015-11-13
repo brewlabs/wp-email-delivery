@@ -1,16 +1,35 @@
 <?php
 
 function wped_get_option( $key ){
-	if($key != ''){
-		return get_option('wped_' . $key);
-	}
+    if($key == '') return false;
+
+    if (strpos($key,'wped_') === false) {
+      $key = 'wped_' . $key;
+    }
+    if(defined('WPED_IS_NETWORK') && WPED_IS_NETWORK){
+      return get_site_option( $key);
+    }
+		return get_option($key);
 }
 
 function wped_set_option( $key , $value ){
-  if($key != ''){
-    return update_option('wped_' . $key , $value);
-  }
+    if($key == '') return false;
+
+    if (strpos($key,'wped_') === false) {
+      $key = 'wped_' . $key;
+    }
+   if(defined('WPED_IS_NETWORK') && WPED_IS_NETWORK){
+      return update_site_option($key, $value);
+    }
+    return update_option( $key , $value);
+  
 }
+
+function wped_is_network_activated(){
+    return is_plugin_active_for_network( WPED_BASENAME );
+}
+
+
 
 
 

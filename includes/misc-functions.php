@@ -6,6 +6,12 @@ function wped_get_option( $key ){
     if (strpos($key,'wped_') === false) {
       $key = 'wped_' . $key;
     }
+
+    if(defined(strtoupper($key))){
+      return constant(strtoupper($key));
+    }
+
+
     if(defined('WPED_IS_NETWORK') && WPED_IS_NETWORK){
       return get_site_option( $key);
     }

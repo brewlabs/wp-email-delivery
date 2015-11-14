@@ -469,7 +469,19 @@ class WP_Email_Delivery_Settings {
 					$html .= '</p>' . "\n";
 				}
 			$html .= '</form>' . "\n";
+			if( !WPED()->connections->is_setup() ){
+				$html .= "<div style='padding: 30px 40px; border: solid 1px #cdcdcd; background: #fff; margin-top: 5px;'><h2 style='margin-top: 0px; padding-top: 0px;'>Get WP Email Delivery for your site.</h2>";
+							$html .= "<p>Try it for free with <strong>50 emails per month</strong>. Sign up at <a target='_blank' href='https://www.wpemaildelivery.com'>https://www.wpemaildelivery.com</a><br>Great for small sites and developers.</p>";
+				
+				$html .= '<p>Need more emails per month check out our monthly plans starting at <strong>$5.00 a month for 10,000 emails</strong>.<br>';		
+				$html .= 'We also have yearly plans starting at <strong>$18 per year for 500 monthly emails</strong>.</p>';	
+				$html .= "</div>";
+
+			}
 		$html .= '</div>' . "\n";
+
+
+
 
 		echo $html;
 	}

@@ -123,6 +123,7 @@ class WP_Email_Delivery_Connections {
         							'async'        	
                                     );
         	$message2['html'] = $message;
+        	
             return $this->wped_mail($message2, $tags, $template_name, $track_opens, $track_clicks);
         } catch ( Exception $e ) {
 	        error_log( "\nwped->::mail: Exception Caught => ".$e->getMessage()."\n" );
@@ -352,10 +353,10 @@ class WP_Email_Delivery_Connections {
                if ( !is_array($message['tags']['general']) )   $message['tags']['general']     = array();
                if ( !is_array($message['tags']['automatic']) ) $message['tags']['automatic']   = array();
                 
-                $message['tags'] = array_merge( $message['tags']['general'], $message['tags']['automatic'], $message['tags']['user'] );
-                
-            	// Sending the message
-              	return $this->message_send( $message );
+	            $message['tags'] = array_merge( $message['tags']['general'], $message['tags']['automatic'], $message['tags']['user'] );
+	           
+	        	// Sending the message
+	          	return $this->message_send( $message );
             
 	    } catch ( Exception $e) {
 	        error_log( date('Y-m-d H:i:s') . " wped::send_email: Exception Caught => ".$e->getMessage()."\n" );
@@ -415,16 +416,19 @@ class WP_Email_Delivery_Connections {
 				$url = self::NOSSL_END_POINT;
 				$info['X-WPED'] = "nossl";
 			}
-
+			
 			$message['headers'] =  array_merge( $info , $message['headers'] );
 			$message['subaccount'] =  wped_get_option('license_key');
 			$message['metadata'] = array(
 			    'return'=> home_url()
 			);
 
-
-		    
-		 	
+		 	$message_encoded = json_encode( $message );
+		 	switch (json_last_error()) {
+		        case JSON_ERROR_UTF8:
+		            $message_encoded = json_encode( $this->utf8_encode_recursive($message) );
+		        break;
+		    }
 			$response = wp_remote_post( $url , array(
 				'method' => 'POST',
 				'timeout' => 45,
@@ -432,7 +436,7 @@ class WP_Email_Delivery_Connections {
 				'httpversion' => '1.0',
 				'blocking' => true,
 				'headers' => array('Content-Type' => 'application/json'),
-				'body' => json_encode( $message ),
+				'body' => $message_encoded,
 				'sslverify' => $verify_ssl,
 				'cookies' => array()
 			    )
@@ -450,6 +454,26 @@ class WP_Email_Delivery_Connections {
 			  
 	}
 	
+	public function utf8_encode_recursive ($array)
+	{
+		$result = array();
+		foreach ($array as $key => $value)
+		{
+		    if (is_array($value))
+		    {
+		        $result[$key] = $this->utf8_encode_recursive($value);
+		    }
+		    else if (is_string($value))
+		    {
+		        $result[$key] = utf8_encode($value);
+		    }
+		    else
+		    {
+		        $result[$key] = $value;
+		    }
+		}
+		return $result;
+	}
 
 
 	public function process_attachments($attachments = array()) {

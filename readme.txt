@@ -3,20 +3,31 @@ Plugin URI: https://www.wpemaildelivery.com
 Contributors: brewlabs, joshl, jaredharbour, itdoug
 Tags: newsletter, newsletters, manager newsletter, newsletter signup, newsletter widget, subscribers, subscription, email marketing, email, emailing, smtp, sendpress, sendgrid, mandrill, mailchimp
 Requires at least: 3.7
-Tested up to: 4.3
-Stable tag: 1.0.5
+Tested up to: 4.3.1
+Stable tag: 1.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Sends all WordPress emails via WP Email Delivery with easy setup and no server configs needed.
+Simple, Easy to setup API based email delivery for WordPress. No SMTP needed! 
 
 == Description ==
 
-If you are having email delivery issue's or your site is hosted on a server that does not support email. The look no further the WP Email Delivery. This plugin is designed to work as a replacement for wp_mail() and will work with core system emails, any plugin or theme that uses the default WordPress email sending. This means items like password resets, Purchase reciepts from Easy Digital Downloads, Newsletters from Mailpoet or SendPress Newsletters, Form submissions via Ninja Forms or Gravity Forms and many others will just work.
+Whether you’re sending transactional emails, marketing emails or both, WP Email Delivery is optimized to get those emails from WordPress to your users. Don't get hung up in blocked server ports or hard to configure plugins. Simply get your license, send a few tests and then enable WP Email Delivery to handle all your emails. 
 
-This plugin does require you to have an WP Email Delivery account to send emails. You can sign up at https://www.wpemaildelivery.com. The service is currently in beta as we get everything rolled out to WordPress.org and the store all setup. 
+> This plugin requires a license key from [https://www.wpemaildelivery.com](https://www.wpemaildelivery.com)
 
-Please visit https://www.wpemaildelivery.com to purchase a license key.
+Just want to try out WP Email Delivery? No problem just head over to our [website](https://www.wpemaildelivery.com) and get 50 emails per month for free. Need more emails per month, check out our paid plans starting at just $5/monthly and $18/yearly. Please visit https://www.wpemaildelivery.com to purchase a license key.
+
+= Known Compatibilities =
+* [Easy Digital Downloads](https://wordpress.org/plugins/easy-digital-downloads/)
+* [Woocommerce](https://wordpress.org/plugins/woocommerce/)
+* [Contact Form 7](https://wordpress.org/plugins/contact-form-7/)
+* [Gravity Forms](http://www.gravityforms.com)
+* [Ninja Forms](https://wordpress.org/plugins/ninja-forms/)
+* [Fast Secure Contact Form](https://wordpress.org/plugins/si-contact-form/)
+* [WP HTML Mail](https://wordpress.org/plugins/wp-html-mail/)
+* [WordPress Leads](https://wordpress.org/plugins/leads/)
+* [SendPress Newsletters](https://wordpress.org/plugins/sendpress/)
 
 
 == Installation ==
@@ -44,6 +55,11 @@ This plugin and service is designed to help you reach your customers via email w
 
 
 == Changelog ==
+
+= 1.0.4 - 2015.11.13 =
+* New: Multisite support added
+* Update: UI refinements
+* Fix: json_encode error for UTF8 characters
 
 = 1.0.3 - 2015.11.4 =
 * Fix: Automated release test

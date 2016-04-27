@@ -170,7 +170,7 @@ class WP_Email_Delivery_Settings {
 					'default'		=> '',
 					'placeholder'	=> __( 'WPED-XXXXXXXXXXXXXXXXXXXXXXXXXX', 'wp-email-delivery' )
 				),
-				
+				/*
 				array(
 					'id' 			=> 'verify_directions',
 					'label'			=> __( 'Verification', 'wp-email-delivery' ),
@@ -182,7 +182,7 @@ class WP_Email_Delivery_Settings {
 					'disable'		=> !WPED()->connections->is_setup(),
 					'url' 			=> '#wped/verify'
 				),
-				
+				*/
 				array(
 					'id' 			=> 'enable_sending',
 					'label'			=> __( 'Enable', 'wp-email-delivery' ),

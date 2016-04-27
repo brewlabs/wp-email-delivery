@@ -110,8 +110,8 @@ class WP_Email_Delivery {
 		register_activation_hook( $this->file, array( $this, 'install' ) );
 
 		// Load frontend JS & CSS
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ), 10 );
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 10 );
+		//add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ), 10 );
+		//add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 10 );
 
 		if ( is_admin() && isset( $_GET['page'] ) && in_array( $_GET['page'] , array('wp_email_delivery_settings')) ) {
 			// Load admin JS & CSS

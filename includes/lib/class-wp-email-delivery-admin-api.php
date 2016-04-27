@@ -69,7 +69,19 @@ class WP_Email_Delivery_Admin_API {
 		switch( $field['type'] ) {
 
 			case 'button':
-				$html .= '<button id="' . esc_attr( $field['id'] ) . '" >'.esc_attr( $field['display'] ).'</button>';
+				$classes = '';
+				if(isset( $field['classes'] )) {
+					$classes = $field['classes'];
+				}
+				$html .= '<button class="'.$classes.'" id="' . esc_attr( $field['id'] ) . '" >'.esc_attr( $field['display'] ).'</button>';
+			break;
+
+			case 'link':
+				$classes = '';
+				if(isset( $field['classes'] )) {
+					$classes = $field['classes'];
+				}
+				$html .= '<a href="'.$field['url'].'" class="'.$classes.'" id="' . esc_attr( $field['id'] ) . '" >'.esc_attr( $field['display'] ).'</a>';
 			break;
 			
 			case 'readonly':

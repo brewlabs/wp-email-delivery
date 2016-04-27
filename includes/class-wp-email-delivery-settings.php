@@ -170,6 +170,19 @@ class WP_Email_Delivery_Settings {
 					'default'		=> '',
 					'placeholder'	=> __( 'WPED-XXXXXXXXXXXXXXXXXXXXXXXXXX', 'wp-email-delivery' )
 				),
+				
+				array(
+					'id' 			=> 'verify_directions',
+					'label'			=> __( 'Verification', 'wp-email-delivery' ),
+					'description'	=> __( 'To send emails with WP Email Delivery you must verify either an email address or domain', 'wp-email-delivery' ),
+					'type'			=> 'link',
+					'default'		=> '',
+					'classes'			=> 'button-primary',
+					'display'		=> 'Verify Email or Domain',
+					'disable'		=> !WPED()->connections->is_setup(),
+					'url' 			=> '#wped/verify'
+				),
+				
 				array(
 					'id' 			=> 'enable_sending',
 					'label'			=> __( 'Enable', 'wp-email-delivery' ),
@@ -238,7 +251,7 @@ class WP_Email_Delivery_Settings {
 				*/
 			)
 		);
-
+		if( WPED()->connections->is_setup() ){
 		$settings['extra'] = array(
 			'title'					=> __( 'Advanced', 'wp-email-delivery' ),
 			'description'			=> __( 'Some extra features to make WP Email Delivery even better.', 'wp-email-delivery' ),
@@ -299,7 +312,7 @@ class WP_Email_Delivery_Settings {
 				)
 			)
 		);
-
+		}
 		$settings['DNS'] = array(
 			'title'					=> __( 'DNS ( SPF & DKIM )', 'wp-email-delivery' ),
 			'description'			=> __( 'Setting up SPF and DKIM require access to your DNS records. Even if you don\'t have access to these records you can still use WP Email Delivery.' , 'wp-email-delivery' ),
@@ -333,6 +346,11 @@ class WP_Email_Delivery_Settings {
 		return $settings;
 	}
 
+	private function send_test_email(){
+		$headers = array('Content-type: text/html');
+		$this->parent->connections->mail( $_POST[ $this->base .'test_email' ], "WP Email Delivery Setup Test", wped_basic_test_email(), $headers, "");
+	}
+
 	/**
 	 * Register plugin settings
 	 * @return void
@@ -351,9 +369,7 @@ class WP_Email_Delivery_Settings {
 			}
 
 			if(isset( $_POST[ $this->base .'test_email' ] )){
-				
-				$headers = array('Content-type: text/html');
-				$this->parent->connections->mail( $_POST[ $this->base .'test_email' ], "WP Email Delivery Setup Test", wped_basic_test_email(), $headers, "");
+				$this->send_test_email();	
 			}
 
 			foreach ( $this->settings as $section => $data ) {
@@ -483,7 +499,13 @@ class WP_Email_Delivery_Settings {
 
 
 		echo $html;
+		$this->templates();
 	}
+
+	public function templates(){
+		 include 'templates/verify-domain.html';
+	}
+
 
 	/**
 	 * Main WP_Email_Delivery_Settings Instance

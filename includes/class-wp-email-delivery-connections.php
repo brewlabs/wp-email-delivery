@@ -53,6 +53,16 @@ class WP_Email_Delivery_Connections {
 		return false;
 	} // End enqueue_styles ()
 
+	public function is_verified(){
+		if( $this->is_setup() ){
+			$verify = wped_get_option('is_verified');
+			if($verify == true){
+				return true;
+			}
+			return false;
+		}
+		return false;
+	}
 
 	public function is_setup(){
 		$key = wped_get_option('license_key');
@@ -416,12 +426,17 @@ class WP_Email_Delivery_Connections {
 				$url = self::NOSSL_END_POINT;
 				$info['X-WPED'] = "nossl";
 			}
+
+			if(defined('SPNL_TESTING')){
+				$url = 'http://spnl.io/';
+			}
 			
 			$message['headers'] =  array_merge( $info , $message['headers'] );
 			$message['subaccount'] =  wped_get_option('license_key');
 			$message['metadata'] = array(
 			    'return'=> home_url()
 			);
+			
 
 		 	$message_encoded = json_encode( $message );
 		 	switch (json_last_error()) {

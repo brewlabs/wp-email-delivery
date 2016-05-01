@@ -1,12 +1,59 @@
 (function($) {
 $( document ).ready( function ( e ) {
 	
+	$('#sending').change(function(){
+		$('#sending_verify').hide();
+		$('#dkim_check').hide();
+		$('#spf_check').hide();
+	});
 
+	$('#sending_verify').click(function(e){
+			e.preventDefault();
+			e.target.blur();
+			var verifyDomain = {
+		        domain: $('#sending').val()
+		    };
+        	var data = new WPED.DKIM();
+        	$('#dkim_check').removeClass('dashicons-yes').addClass('spin').addClass('dashicons-update').css('color','gray');
+        	data.fetch(
+        		{
+        			data: verifyDomain,
+			        success: function (dkim) {
+			        	$('#dkim_check').addClass('dashicons-yes').removeClass('spin').removeClass('dashicons-update');
+			           if(dkim.get('success') == true){
+			           		$('#dkim_check').css('color','green');
+			           } else {
+			           		$('#dkim_check').css('color','red');
+			           }
+			        },
+			        type: 'POST'
+			    }
+        	);
+			$('#spf_check').removeClass('dashicons-yes').addClass('spin').addClass('dashicons-update').css('color','gray');
+        	var spfdata = new WPED.SPF();
+        	spfdata.fetch(
+        		{
+        			data: verifyDomain,
+			        success: function (spf) {
+			        	$('#spf_check').addClass('dashicons-yes').removeClass('spin').removeClass('dashicons-update');
+			           if(spf.get('success') == true){
+			           		$('#spf_check').css('color','green');
+			           } else {
+			           		$('#spf_check').css('color','red');
+			           }
+			        },
+			        type: 'POST'
+			    }
+        	);
+
+        });
  
     var AppRouter = Backbone.Router.extend({
         routes: {
             "wped/:action/:id": "defaultRoute", // matches http://example.com/#anything-here
+            "wped/status":"wped_info",
             "wped/verify": "wped_verify"
+            
         }
     });
     var WPED = {
@@ -14,6 +61,22 @@ $( document ).ready( function ( e ) {
     };
 	WPED.Model = Backbone.Model.extend({
 	        url : ajaxurl+'?action=wped_verify_sender',
+	    });
+
+	WPED.DKIM = Backbone.Model.extend({
+	        urlRoot : ajaxurl+'?action=wped_verify_dkim',
+	         defaults: {
+        	    domain: '',
+            	email: ''
+        		}	
+	    });
+
+		WPED.SPF = Backbone.Model.extend({
+	        urlRoot : ajaxurl+'?action=wped_verify_spf',
+	         defaults: {
+        	    domain: '',
+            	email: ''
+        		}	
 	    });
 
     var x =  wp.Backbone.View.extend({
@@ -36,7 +99,7 @@ $( document ).ready( function ( e ) {
             
         }
         ,render: function() {
-        	console.log('here');
+        	
         this.$el.html(this.template({name: 'world'}));
     	},
     	/**
@@ -215,6 +278,15 @@ $( document ).ready( function ( e ) {
         	data.fetch();
 
         	$('body').append(t.$el);
+        	//console.log(t.$el);
+    	});
+	});
+
+
+	 app_router.on('route:wped_info', function(domain) {
+	 	$(document).ready(function(){
+        	
+        	//$('body').append(t.$el);
         	//console.log(t.$el);
     	});
 	});

@@ -21,6 +21,9 @@ require_once( 'includes/class-wp-email-delivery-settings.php' );
 require_once( 'includes/class-wp-email-delivery-connections.php' );
 
 // Load plugin libraries
+if(is_admin()){
+	require_once( 'includes/lib/class-wp-email-delivery-admin-ajax.php' );
+}
 require_once( 'includes/lib/class-wp-email-delivery-admin-api.php' );
 require_once( 'includes/lib/class-wp-email-delivery-post-type.php' );
 require_once( 'includes/lib/class-wp-email-delivery-taxonomy.php' );

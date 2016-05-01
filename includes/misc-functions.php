@@ -15,7 +15,7 @@ function wped_get_option( $key ){
     if(defined('WPED_IS_NETWORK') && WPED_IS_NETWORK){
       return get_site_option( $key);
     }
-		return get_option($key);
+		return get_option($key, false);
 }
 
 function wped_set_option( $key , $value ){
@@ -110,7 +110,7 @@ background-color: #f6f6f6;
                     <br><br>
                     You are now ready to enable sending on the <strong>Setup</strong> screen in WP Email Delivery.
 									</td>
-								</tr><<tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;"><td class="content-block" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
+								</tr><tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;"><td class="content-block" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
 										&mdash; WPED
 									</td>
 								</tr></table></td>

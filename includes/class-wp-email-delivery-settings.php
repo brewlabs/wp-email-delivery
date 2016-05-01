@@ -272,6 +272,7 @@ class WP_Email_Delivery_Settings {
 					'default'		=> '',
 					'placeholder'   => ''
 				),
+				/*
 				array(
 					'id' 			=> 'track_opens',
 					'label'			=> __( 'Track Opens', 'wp-email-delivery' ),
@@ -286,7 +287,7 @@ class WP_Email_Delivery_Settings {
 					'type'			=> 'checkbox',
 					'default'		=> ''
 				),
-				
+				*/
 				array(
 					'id' 			=> 'enable_nossl',
 					'label'			=> __( 'Disable SSL Sending', 'wp-email-delivery' ),
@@ -313,11 +314,46 @@ class WP_Email_Delivery_Settings {
 			)
 		);
 		}
+		$s = wped_get_option('sending');
+		$inline_button = '';
+		if($s){
+			$inline_button = '<a href="#wped/status" id="sending_verify" class="button-primary">Verify</a>';
+		}
+
+		
+		$stat = '';
+
+		$spf = wped_get_option('spf_verified');
+	
+		$stat .= '<br>SPF: ';
+		if($spf != false && $spf == $s){
+			$stat .= '<span id="spf_check" class="dashicons dashicons-yes" style="color:green;"></span>';
+		} else {
+			$stat .= '<span id="spf_check" class="dashicons dashicons-yes" style="color:red;"></span>';
+		}
+
+		$dkim = wped_get_option('dkim_verified');
+		$stat .= '<br>DKIM: ';
+		if($dkim != false && $dkim == $s){
+			$stat .= '<span id="dkim_check" class="dashicons dashicons-yes" style="color:green;"></span>';
+		} else {
+			$stat .= '<span id="dkim_check" class="dashicons dashicons-yes" style="color:red;"></span>';
+		}
+
 		$settings['DNS'] = array(
 			'title'					=> __( 'DNS ( SPF & DKIM )', 'wp-email-delivery' ),
 			'description'			=> __( 'Setting up SPF and DKIM require access to your DNS records. Even if you don\'t have access to these records you can still use WP Email Delivery.' , 'wp-email-delivery' ),
-			'custom_save' 			=> 'none',
+			
 			'fields'				=> array(
+				array(
+					'id' 			=> 'sending',
+					'label'			=> __( 'Sending Domain' , 'wp-email-delivery' ),
+					'description'	=> __( '<br>This is the domain the WPED will create a DKIM record for.', 'wp-email-delivery' ) . $stat,
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> 'example.com',
+					'extra' => $inline_button
+				),
 				array(
 					'id' 			=> 'spf',
 					'label'			=> __( 'SPF Record' , 'wp-email-delivery' ),
@@ -328,11 +364,10 @@ class WP_Email_Delivery_Settings {
 				),
 				array(
 					'id' 			=> 'dkim',
+					'pre_text' => 'Create a TXT record. Enter:<br><br><strong>Host/Name:</strong> api._domainkey',
 					'label'			=> __( 'DKIM Record' , 'wp-email-delivery' ),
-					'description'	=> __( 'Coming very soon. If you need DKIM now, please contact us.', 'wp-email-delivery' ),
-					'type'			=> 'readonly',
-					'default'		=> '',
-					'placeholder'	=> ''
+					'type'			=> 'readonlytextarea',
+					'always'		=> 'k=rsa;t=s;p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCbmGbQMzYeMvxwtNQoXN0waGYaciuKx8mtMh5czguT4EZlJXuCt6V+l56mmt3t68FEX5JJ0q4ijG71BGoFRkl87uJi7LrQt1ZZmZCvrEII0YO4mp8sDLXC8g1aUAoi8TJgxq2MJqCaMyj5kAm3Fdy2tzftPCV/lbdiJqmBnWKjtwIDAQAB',
 				)
 			)
 		);

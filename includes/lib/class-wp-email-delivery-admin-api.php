@@ -85,13 +85,26 @@ class WP_Email_Delivery_Admin_API {
 			break;
 			
 			case 'readonly':
-				$html .= '<input id="' . esc_attr( $field['id'] ) . '" class="regular-text code" readonly type="text" name="' . esc_attr( $option_name ) . '" placeholder="' . esc_attr( $field['placeholder'] ) . '" value="' . esc_attr( $data ) . '" />' . "\n";
+				$html .= '<input onclick="this.focus();this.select()" id="' . esc_attr( $field['id'] ) . '" class="regular-text code" readonly type="text" name="' . esc_attr( $option_name ) . '" placeholder="' . esc_attr( $field['placeholder'] ) . '" value="' . esc_attr( $data ) . '" />' . "\n";
 			break;
+			case 'readonlytextarea':
+					if($field['pre_text']){
+						$html .= '<span class="description">' . $field['pre_text'] . '</span><br><br>' . "\n";
+					}
+					$html .= '<textarea onclick="this.focus();this.select()" rows="10" cols="50" id="' . esc_attr( $field['id'] ) . '" class="regular-text code" readonly="readonly" >'. $field['always'] . '</textarea>' . "\n";
+			break;
+
+			
 
 			case 'text':
 			case 'url':
 			case 'email':
-				$html .= '<input id="' . esc_attr( $field['id'] ) . '" class="regular-text code"  type="text" name="' . esc_attr( $option_name ) . '" placeholder="' . esc_attr( $field['placeholder'] ) . '" value="' . esc_attr( $data ) . '" />' . "\n";
+				$html .= '<input id="' . esc_attr( $field['id'] ) . '" class="regular-text code"  type="text" name="' . esc_attr( $option_name ) . '" placeholder="' . esc_attr( $field['placeholder'] ) . '" value="' . esc_attr( $data ) . '" />';
+				if(isset($field['extra'])){
+					$html .= $field['extra'];
+				}
+				 $html .= "\n";
+				
 			break;
 
 			case 'password':
@@ -208,8 +221,9 @@ class WP_Email_Delivery_Admin_API {
 				if ( ! $post ) {
 					$html .= '<label for="' . esc_attr( $field['id'] ) . '">' . "\n";
 				}
-
-				$html .= '<span class="description">' . $field['description'] . '</span>' . "\n";
+				if(isset($field['description'])){
+					$html .= '<span class="description">' . $field['description'] . '</span>' . "\n";
+				}
 
 				if ( ! $post ) {
 					$html .= '</label>' . "\n";

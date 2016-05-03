@@ -3,8 +3,8 @@ Plugin URI: https://www.wpemaildelivery.com
 Contributors: brewlabs, joshl, jaredharbour, itdoug
 Tags: newsletter, newsletters, manager newsletter, newsletter signup, newsletter widget, subscribers, subscription, email marketing, email, emailing, smtp, sendpress, sendgrid, mandrill, mailchimp
 Requires at least: 3.7
-Tested up to: 4.3.1
-Stable tag: 1.0.6
+Tested up to: 4.5.1
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -55,6 +55,11 @@ This plugin and service is designed to help you reach your customers via email w
 
 
 == Changelog ==
+
+= 1.0.7 - 2016.5.2 =
+* New: DKIM and SPF support
+* Fix: remove unused CSS and JS
+* Update: prepred for backbone js support
 
 = 1.0.4 - 2015.11.13 =
 * New: Multisite support added

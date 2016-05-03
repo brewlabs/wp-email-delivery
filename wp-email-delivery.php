@@ -6,8 +6,8 @@ Description: Managed Email Delivery for WordPress
 Author: BrewLabs
 Author URI: https://www.wpemaildelivery.com/
 Requires at least: 4.0
-Tested up to: 4.3.1
-Version: 1.0.6
+Tested up to: 4.5.1
+Version: 1.0.7
 
 Text Domain: wp-email-delivery
 Domain Path: /lang/
@@ -44,7 +44,7 @@ define( 'WPED_IS_NETWORK', wped_is_network_activated() );
  * @return object WP_Email_Delivery
  */
 function WPED () {
-	return WP_Email_Delivery::instance( __FILE__, '1.0.6' );
+	return WP_Email_Delivery::instance( __FILE__, '1.0.7' );
 }
 WPED();
 

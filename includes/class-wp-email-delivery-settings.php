@@ -186,7 +186,7 @@ class WP_Email_Delivery_Settings {
 				array(
 					'id' 			=> 'enable_sending',
 					'label'			=> __( 'Enable', 'wp-email-delivery' ),
-					'description'	=> __( 'Allow <b>WP Email Delivery</b> to override the default wp_mail() function to send emails. ( We reccomend you send a few tests firsts )', 'wp-email-delivery' ),
+					'description'	=> __( 'Allow <b>WP Email Delivery</b> to override the default wp_mail() function to send emails. ( We recommend you send a few tests firsts )', 'wp-email-delivery' ),
 					'type'			=> 'checkbox',
 					'default'		=> '',
 					'disable'		=> !WPED()->connections->is_setup()
@@ -313,7 +313,7 @@ class WP_Email_Delivery_Settings {
 				)
 			)
 		);
-		}
+		
 		$s = wped_get_option('sending');
 		$inline_button = '';
 		if($s){
@@ -373,7 +373,7 @@ class WP_Email_Delivery_Settings {
 		);
 
 
-
+		}
 
 
 		$settings = apply_filters( $this->parent->_token . '_settings_fields', $settings );

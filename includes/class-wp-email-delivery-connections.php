@@ -547,7 +547,7 @@ class WP_Email_Delivery_Connections {
             $struct['content']  = $file_buffer;
 
         } catch (Exception $e) {
-            throw new WEPD_Exception('Error creating the attachment structure: '.$e->getMessage());
+            throw new WPED_Exception('Error creating the attachment structure: '.$e->getMessage());
         }
         
         return $struct;

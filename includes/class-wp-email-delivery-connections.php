@@ -524,15 +524,9 @@ class WP_Email_Delivery_Connections {
                 function set_magic_quotes($value) { return true;}
             }
             
-            if (strnatcmp(phpversion(),'6') >= 0) {
-                $magic_quotes = get_magic_quotes_runtime();
-                set_magic_quotes_runtime(0);
-            }
-            
             $file_buffer  = file_get_contents($path);
             $file_buffer  = chunk_split(base64_encode($file_buffer), 76, "\n");
             
-            if (strnatcmp(phpversion(),'6') >= 0) set_magic_quotes_runtime($magic_quotes);
             
             $mime_type = '';
 			if ( function_exists('finfo_open') && function_exists('finfo_file') ) {

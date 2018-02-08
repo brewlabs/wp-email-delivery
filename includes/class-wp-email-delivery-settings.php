@@ -257,6 +257,13 @@ class WP_Email_Delivery_Settings {
 			'description'			=> __( 'Some extra features to make WP Email Delivery even better.', 'wp-email-delivery' ),
 			'fields'				=> array(
 				array(
+					'id' 			=> 'enable_override',
+					'label'			=> __( 'Override From', 'wp-email-delivery' ),
+					'description'	=> __( 'This will force all emails to come from the settings below.', 'wp-email-delivery' ),
+					'type'			=> 'checkbox',
+					'default'		=> ''
+				),
+				array(
 					'id' 			=> 'custom_name',
 					'label'			=> __( 'From Name', 'wp-email-delivery' ),
 					'description'	=> __( 'This from name wil be used if one is not set when emails are sent to wp_mail() ', 'wp-email-delivery' ),
@@ -272,6 +279,7 @@ class WP_Email_Delivery_Settings {
 					'default'		=> '',
 					'placeholder'   => ''
 				),
+				
 				/*
 				array(
 					'id' 			=> 'track_opens',

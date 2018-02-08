@@ -4,8 +4,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 class WP_Email_Delivery_Connections {
 	const API_VERSION = '1.0';    
-    const SSL_END_POINT = 'https://gateway.wped.co/send/';
-	const NOSSL_END_POINT = 'http://api.wped.co/send';
+    const SSL_END_POINT = 'http://spnl-env.elasticbeanstalk.com/send/';
+	const NOSSL_END_POINT = 'http://spnl-env.elasticbeanstalk.com/send';
 	
 		/**
 	 * The single instance of WP_Email_Delivery_Settings.
@@ -346,6 +346,22 @@ class WP_Email_Delivery_Connections {
 						$message['from_name']  = __('WordPress','wp-email-delivery');
 					}
 				}
+
+				$enable_override = wped_get_option('enable_override');
+
+				if($enable_override != false){
+					$custom_name = wped_get_option('custom_name');
+					if(!empty($custom_name) && $custom_name != false ){
+						$message['from_name']  = $custom_name;
+					}
+					$custom_email = wped_get_option('custom_from');
+					if(is_email($custom_email)){
+						$message['from_email']  = $custom_email;
+					} 
+				}
+
+
+				
 
 
 				

@@ -79,10 +79,10 @@ class WP_Email_Delivery_Settings {
 		  // individually.
 		 
 		  foreach ($options as $option) {
-		    if (isset($_POST[$option])) {
+		    if (!empty($_POST[$option])) {
 		      // If we registered a callback function to sanitizes the option's
 		      // value it is where we call it (see register_setting).
-		      $option_value = apply_filters('sanitize_option_' . $option_name, $_POST[$option]);
+		      $option_value = apply_filters('sanitize_option_' . $option, $_POST[$option]);
 		      // And finally we save our option with the site's options.
 		      update_site_option($option, $option_value);
 		    } else {
@@ -391,7 +391,7 @@ class WP_Email_Delivery_Settings {
 
 	private function send_test_email(){
 		$headers = array('Content-type: text/html');
-		$this->parent->connections->mail( $_POST[ $this->base .'test_email' ], "WP Email Delivery Setup Test", wped_basic_test_email(), $headers, "");
+		$this->parent->connections->mail( sanitize_email($_POST[ $this->base .'test_email' ]), "WP Email Delivery Setup Test", wped_basic_test_email(), $headers, "");
 	}
 
 	/**
@@ -403,15 +403,15 @@ class WP_Email_Delivery_Settings {
 
 			// Check posted/selected tab
 			$current_section = '';
-			if ( isset( $_POST['tab'] ) && $_POST['tab'] ) {
-				$current_section = $_POST['tab'];
+			if (!empty( $_POST['tab'] )) {
+				$current_section = sanitize_title_with_dashes($_POST['tab']);
 			} else {
-				if ( isset( $_GET['tab'] ) && $_GET['tab'] ) {
-					$current_section = $_GET['tab'];
+				if ( !empty( $_GET['tab'] ) ) {
+					$current_section = sanitize_title_with_dashes($_GET['tab']);
 				}
 			}
 
-			if(isset( $_POST[ $this->base .'test_email' ] )){
+			if(!empty( $_POST[ $this->base .'test_email' ] )){
 				$this->send_test_email();	
 			}
 
@@ -467,8 +467,8 @@ class WP_Email_Delivery_Settings {
 				$html .= '</p>'. $this->parent->wp_mail_error .'</p>';
 			}
 			$tab = '';
-			if ( isset( $_GET['tab'] ) && $_GET['tab'] ) {
-				$tab .= $_GET['tab'];
+			if ( !empty( $_GET['tab'] ) ) {
+				$tab .= sanitize_title_with_dashes($_GET['tab']);
 			}
 
 			// Show page tabs
@@ -481,14 +481,14 @@ class WP_Email_Delivery_Settings {
 
 					// Set tab class
 					$class = 'nav-tab';
-					if ( ! isset( $_GET['tab'] ) ) {
+					if ( empty( $_GET['tab'] ) ) {
 						if ( 0 == $c ) {
 							$class .= ' nav-tab-active';
 							$button_text = isset( $data['custom_save'] ) ? $data['custom_save'] : esc_attr( __( 'Save Settings' , 'wp-email-delivery' ) ) ;
 					
 						}
 					} else {
-						if ( isset( $_GET['tab'] ) && $section == $_GET['tab'] ) {
+						if ( !empty( $_GET['tab'] ) && $section == sanitize_title_with_dashes($_GET['tab']) ) {
 							$class .= ' nav-tab-active';
 							$button_text = isset( $data['custom_save'] ) ? $data['custom_save'] : esc_attr( __( 'Save Settings' , 'wp-email-delivery' ) ) ;
 					
@@ -497,7 +497,7 @@ class WP_Email_Delivery_Settings {
 
 					// Set tab link
 					$tab_link = add_query_arg( array( 'tab' => $section ) );
-					if ( isset( $_GET['settings-updated'] ) ) {
+					if ( !empty( $_GET['settings-updated'] ) ) {
 						$tab_link = remove_query_arg( 'settings-updated', $tab_link );
 					}
 

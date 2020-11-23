@@ -3,8 +3,8 @@ Plugin URI: https://www.wpemaildelivery.com
 Contributors: brewlabs, joshl, jaredharbour, itdoug
 Tags: newsletter, newsletters, manager newsletter, newsletter signup, newsletter widget, subscribers, subscription, email marketing, email, emailing, smtp, sendpress, sendgrid, mandrill, mailchimp
 Requires at least: 3.7
-Tested up to: 4.9.1
-Stable tag: 1.1.2.7
+Tested up to: 5.6
+Stable tag: 1.20.11.23
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -55,6 +55,9 @@ This plugin and service is designed to help you reach your customers via email w
 
 
 == Changelog ==
+
+= 1.20.11.23 - 2020.11.23 =
+* Update: code base update for new wordpress versions
 
 = 1.1.2.7 - 2018.2.7 =
 * Update: add sending email override settings
